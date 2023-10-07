@@ -1,26 +1,26 @@
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 export const ControlledForm = () => {
+    const infoRef = useRef('');
+
     const [values, setValues] = useState({
-        username: '',
-        password: '',
-        age: '',
-        bio: '',
-        gender: 'm',
-        userType: 'individual',
-        tac: false
+        username: '', password: '', age: '', bio: '', gender: 'm', userType: 'individual', tac: false, egn: '', eik: ''
     });
+
+    useEffect(() => {
+            if (values.username && values.age) {
+                infoRef.current.value = `${values.username} - ${values.age}`;
+            }
+    }, [values.username, values.age]);
 
     const changeHandler = (e) => {
         e.preventDefault();
         setValues(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.type == 'checkbox' ? e.target.checked : e.target.value,
+            ...prevState, [e.target.name]: e.target.type == 'checkbox' ? e.target.checked : e.target.value,
         }));
     };
 
-    //* old style
-
+    // * old style
     // const [username, setUsername] = useState('');
     // const [password, setPassword] = useState('');
     // const [age, setAge] = useState('');
@@ -88,6 +88,12 @@ export const ControlledForm = () => {
                    checked={values.userType == 'corporate'}/>
         </div>
         <div>
+            <label htmlFor="{'identifier'}">{values.userType == 'individual' ? 'EGN' : 'EIK'}</label>
+            {values.userType == 'individual' ?
+              <input type={'text'} id={'identifier'} name={'egn'} value={values.egn} onChange={changeHandler}/> :
+              <input type={'text'} id={'identifier'} name={'eik'} value={values.eik} onChange={changeHandler}/>}
+        </div>
+        <div>
             <label htmlFor="tac">Tac: </label>
             <input id="tac" type="checkbox" name="tac"
                    checked={values.tac}
@@ -95,7 +101,12 @@ export const ControlledForm = () => {
         </div>
         <div>
             {/*<input type="submit" value="Login"/> */}
-            <button type="submit">Login</button>
+            <button type="submit" disabled={!values.tac}>Login</button>
+        </div>
+
+        <div>
+            <label htmlFor="uncontrolled-input">Ref controlled input</label>
+            <input type="text" name={'uncontrolled'} id="uncontrolled-input" ref={infoRef}/>
         </div>
     </form>);
 };
