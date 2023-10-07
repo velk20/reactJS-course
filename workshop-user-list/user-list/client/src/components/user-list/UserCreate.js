@@ -41,7 +41,7 @@ export const UserCreate = ({onClose, onUserCreate}) => {
     const minLength = (e, minLength) => {
           setErrors(prevState => ({
               ...prevState,
-              [e.target.name]: values[e.target.name].length < minLength,
+              [e.target.name]: !e.target.value || values[e.target.name].length < minLength,
           }))
     }
 
